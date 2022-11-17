@@ -25,38 +25,43 @@ public class LottoMachine {
 
     private static List<Integer> winningList;
 
-    public List<Lotto> getLotteryTickets() {
-        return lotteryTickets;
-    }
 
-    private final List<Lotto> lotteryTickets;
+
+    private List<Lotto> lotteryTickets;
     private WinningNumbers winningNumbers;
-    private final int count;
+    private int amountOfTickets;
 
 
 
-    public LottoMachine(int count) {
-        this.count = count / 1000;
-        this.lotteryTickets = createLottoTickets();
+    public LottoMachine() {
+        this.lotteryTickets = getLotteryTickets();
     }
 
 
     public int getCount() {
-        return count;
+        return amountOfTickets;
+    }
+
+    public void setAmountOfTickets(int amountOfTickets) {
+        this.amountOfTickets = amountOfTickets;
     }
 
 
-    public List<Lotto> createLottoTickets() {
+    public List<Lotto> getLotteryTickets() {
+        return lotteryTickets;
+    }
+
+    public void setLottoTickets() {
         List<Lotto> lottoTickets = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < amountOfTickets; i++) {
             Lotto lotto = createRandomNumbers();
             lottoTickets.add(lotto);
         }
-        return lottoTickets;
+        this.lotteryTickets = lottoTickets;
     }
 
-    public void setWinningNumbers(Lotto lotto, int bonusNumber) {
-        winningNumbers = new WinningNumbers(lotto, bonusNumber);
+    public void setWinningNumbers(List<Integer> winningNumbers, int bonusNumber) {
+        this.winningNumbers = new WinningNumbers(winningNumbers, bonusNumber);
     }
 
     private Lotto createRandomNumbers() {
@@ -68,6 +73,12 @@ public class LottoMachine {
 
 
     public List<Integer> getWinningList() {
+//        return getLotteryTickets()
+//                .stream()
+//                .map(this::getWinningCount)
+//                .reduce((acc, cur) -> {
+//                    return 어쩌구저쩌구
+//                }, new int[RANK_LIST_SIZE]);
         winningList = IntStream.of(new int[RANK_LIST_SIZE])
                 .boxed()
                 .collect(Collectors.toList());
@@ -91,8 +102,8 @@ public class LottoMachine {
     }
 
     private boolean checkWinningNumber(int number) {
-        Lotto winningLotto = winningNumbers.getWinningNumbers();
-        if (winningLotto.getLotteryTicket().contains(number)) {
+        List<Integer> winningLotto = winningNumbers.getWinningNumbers();
+        if (winningLotto.contains(number)) {
             return true;
         }
         return false;
@@ -103,7 +114,7 @@ public class LottoMachine {
         for (int i = INITIAL_VALUE; i < RANK_LIST_SIZE; i++) {
             moneyAll += Rank.findMoney(i).getMoney(winningList.get(i));
         }
-        return (double) moneyAll / (LOTTO_UNIT_MONEY * (double) count / PERCENTAGE);
+        return (double) moneyAll / (LOTTO_UNIT_MONEY * (double) amountOfTickets / PERCENTAGE);
     }
 
 

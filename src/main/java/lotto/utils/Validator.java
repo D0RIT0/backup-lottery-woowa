@@ -29,7 +29,7 @@ public class Validator {
     public int refineAmount(String inputRawAmount) {
         int amount = toNumber(inputRawAmount);
         isValidAmount(amount);
-        return amount;
+        return amount / MONEY_UNIT; // 나눈 값 자체를 리턴
     }
 
     public List<Integer> refineWinningNumbers(String inputRawWinningNumbers) {

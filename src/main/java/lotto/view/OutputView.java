@@ -37,8 +37,4 @@ public class OutputView {
     public void printYield(double percent) {
         System.out.println(FIRST_YIELD_MESSAGE + String.format("%.1f", percent) + SECOND_YIELD_MESSAGE);
     }
-
-    public static void printErrorMessage(String message) {
-        System.out.println(message);
-    }
 }

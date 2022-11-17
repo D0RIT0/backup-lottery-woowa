@@ -9,26 +9,42 @@ import java.util.List;
 
 public class LottoController {
 
-    private static InputView inputView;
-    private static OutputView outputView;
+    private final InputView inputView;
+    private final OutputView outputView;
 
-    public LottoController() {
-        inputView = new InputView();
-        outputView = new OutputView();
+    private final LottoMachine lottoMachine;
+
+    public LottoController(InputView inputView, OutputView outputView, LottoMachine lottoMachine) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+        this.lottoMachine = lottoMachine;
+    }
+
+    public void first() {
+        int amountOfTicket = this.inputView.inputMoney();
+        lottoMachine.setAmountOfTickets(amountOfTicket);
+        this.outputView.printLottoCount(lottoMachine.getCount());
+    }
+
+    public void second() {
+        lottoMachine.setLottoTickets();
+        List<Lotto> tickets = lottoMachine.getLotteryTickets();
+        this.outputView.printLottoNumbers(tickets);
+    }
+
+    public void third() {
+        List<Integer> winningNumbers = this.inputView.inputWinningNumbers(); // 여기는 잘못됨, EachLotto 이런 식으로 만들어서 Lotto 랑은 자료형 다름
+        int bonusNumber = this.inputView.inputBonusNumber();
+        lottoMachine.setWinningNumbers(winningNumbers, bonusNumber);
+        this.outputView.printWinningList(lottoMachine.getWinningList());
+        this.outputView.printYield(lottoMachine.getYield());
     }
 
     public void run() {
         try {
-            int amount = inputView.inputMoney();
-            LottoMachine lottoMachine = new LottoMachine(amount);
-            outputView.printLottoCount(lottoMachine.getCount());
-            List<Lotto> tickets = lottoMachine.getLotteryTickets();
-            outputView.printLottoNumbers(tickets);
-            Lotto winningNumbers = new Lotto(inputView.inputWinningNumbers());
-            int bonusNumber = inputView.inputBonusNumber();
-            lottoMachine.setWinningNumbers(winningNumbers, bonusNumber);
-            outputView.printWinningList(lottoMachine.getWinningList());
-            outputView.printYield(lottoMachine.getYield());
+            first();
+            second();
+            third();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

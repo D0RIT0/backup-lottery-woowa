@@ -14,7 +14,7 @@ public class InputView {
     private List<Integer> winningNumbers;
 
 
-
+    // constructor lottocontroller처럼 외부에서 받아서 오는 형태로
     Validator validator;
 
     public InputView() {
