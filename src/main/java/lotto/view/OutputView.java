@@ -1,5 +1,6 @@
 package lotto.view;
 
+import lotto.domain.Lotto;
 import lotto.domain.Rank;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class OutputView {
 
     public void printLottoCount(int count) {
         System.out.println(count + PRINT_LOTTO_COUNT);
-        System.out.println();
     }
 
-    public void printLottoNumbers(List<List<Integer>> numbers) {
-        numbers.stream()
-                .forEach(System.out::println);
+    public void printLottoNumbers(List<Lotto> tickets) {
+        for (Lotto ticket : tickets) {
+            System.out.println(ticket.getLotteryTicket());
+        }
     }
 
     public void printWinningList(List<Integer> winningList) {

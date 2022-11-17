@@ -78,7 +78,7 @@ public class Validator {
         if(!isRightRange(bonusNumber)) {
             throw new IllegalArgumentException(RANGE_OVER_NUMBER);
         }
-        if(!winningNumbers.contains(bonusNumber)) {
+        if(winningNumbers.contains(bonusNumber)) {
             throw new IllegalArgumentException(INVALID_BONUS_NUMBER_INCLUDES_WINNING_NUMBER);
         }
     }

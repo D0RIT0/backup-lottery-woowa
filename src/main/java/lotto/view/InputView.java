@@ -27,6 +27,7 @@ public class InputView {
         return validator.refineAmount(rawAmount);
     }
 
+
     public List<Integer> inputWinningNumbers() {
         System.out.println(INPUT_WINNING_NUMBER);
         String rawWinningNumbers = Console.readLine();

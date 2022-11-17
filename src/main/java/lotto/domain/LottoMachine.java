@@ -25,54 +25,53 @@ public class LottoMachine {
 
     private static List<Integer> winningList;
 
-    private LotteryTickets lotteryTickets;
+    public List<Lotto> getLotteryTickets() {
+        return lotteryTickets;
+    }
+
+    private final List<Lotto> lotteryTickets;
     private WinningNumbers winningNumbers;
-    private int count;
+    private final int count;
+
+
 
     public LottoMachine(int count) {
-        this.count = count;
-        lotteryTickets = new LotteryTickets(createLottos(count));
+        this.count = count / 1000;
+        this.lotteryTickets = createLottoTickets();
     }
 
-    private List<Lotto> createLottos(int count) {
-        List<Lotto> lottos = new ArrayList<Lotto>();
-        IntStream.range(INITIAL_VALUE, count)
-                .forEach((w) -> lottos.add(createRandomNumbers()));
-        return lottos;
+
+    public int getCount() {
+        return count;
     }
 
-    public void saveWinningNumber(Lotto lotto, int bonusNumber) {
+
+    public List<Lotto> createLottoTickets() {
+        List<Lotto> lottoTickets = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Lotto lotto = createRandomNumbers();
+            lottoTickets.add(lotto);
+        }
+        return lottoTickets;
+    }
+
+    public void setWinningNumbers(Lotto lotto, int bonusNumber) {
         winningNumbers = new WinningNumbers(lotto, bonusNumber);
     }
 
     private Lotto createRandomNumbers() {
-        List<Integer> numbers = new ArrayList<>(Randoms.pickUniqueNumbersInRange(MIN_LOTTO_NUMBER,
+        List<Integer> randomNumbers = new ArrayList<>(Randoms.pickUniqueNumbersInRange(MIN_LOTTO_NUMBER,
                 MAX_LOTTO_NUMBER, LOTTO_SIZE));
-        Collections.sort(numbers);
-        return new Lotto(numbers);
+        Collections.sort(randomNumbers);
+        return new Lotto(randomNumbers);
     }
 
-    public static boolean checkDuplication(List<Integer> numbers, int number) {
-        if (numbers.contains(number)) {
-            return false;
-        }
-        return true;
-    }
-
-    public List<List<Integer>> getLottosNumberList() {
-        List<Lotto> lottos = lotteryTickets.getLotteryTickets();
-        List<List<Integer>> lottosNumbers = new ArrayList<>();
-        lottos.forEach((lotto) -> {
-                    lottosNumbers.add(lotto.getLotteryNumbers());
-                });
-        return lottosNumbers;
-    }
 
     public List<Integer> getWinningList() {
         winningList = IntStream.of(new int[RANK_LIST_SIZE])
                 .boxed()
                 .collect(Collectors.toList());
-        lotteryTickets.getLotteryTickets().forEach(lotto -> {
+        getLotteryTickets().forEach(lotto -> {
             int winningCount = getWinningCount(lotto);
             winningList.set(winningCount, winningList.get(winningCount) + COLLECT_LOTTO);
         });
@@ -80,9 +79,9 @@ public class LottoMachine {
     }
 
     private int getWinningCount(Lotto lotto) {
-        int winningCount = (int) lotto.getLotteryNumbers().stream()
+        int winningCount = (int) lotto.getLotteryTicket().stream()
                 .filter(this::checkWinningNumber).count();
-        if (winningCount == FIVE_COLLECT && lotto.getLotteryNumbers().contains(winningNumbers.getBonusNumber())) {
+        if (winningCount == FIVE_COLLECT && lotto.getLotteryTicket().contains(winningNumbers.getBonusNumber())) {
             return winningCount + FIVE_COLLECT_ALPHA_SCORE;
         }
         if (winningCount == ALL_COLLECT) {
@@ -92,7 +91,8 @@ public class LottoMachine {
     }
 
     private boolean checkWinningNumber(int number) {
-        if (winningNumbers.getWinningNumbers().getLotteryNumbers().contains(number)) {
+        Lotto winningLotto = winningNumbers.getWinningNumbers();
+        if (winningLotto.getLotteryTicket().contains(number)) {
             return true;
         }
         return false;
